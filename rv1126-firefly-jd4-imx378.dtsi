@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
+ */
+
+#include "rv1126-firefly-jd4-mipi101-BSD1218-A101KL68.dtsi"
+
+&i2c1 {
+	//status = "okay";
+	/delete-node/ os04a10@36;
+	/* clock-frequency = <400000>; */
+
+	imx378: imx378@1a {
+		status = "okay";
+		compatible = "sony,imx378";
+		reg = <0x1a>;
+		clocks = <&cru CLK_MIPICSI_OUT>;
+		clock-names = "xvclk";
+		power-domains = <&power RV1126_PD_VI>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&mipicsi_clk0>;
+
+		dovdd-supply = <&vcc_dovdd>;		
+		avdd-supply = <&vcc_avdd>; // dvdd = 1.05V over dc-dc 
+		dvdd-supply = <&vcc_3v3>; // invar change order - 
+		reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
+		pwdn-gpios = <&gpio1 RK_PD4 GPIO_ACTIVE_HIGH>;	
+		rockchip,camera-module-index = <1>;
+		rockchip,camera-module-facing = "front";
+		rockchip,camera-module-name = "A12N03C";
+		rockchip,camera-module-lens-name = "LENS";
+		// NO_HDR:0 HDR_X2:5 HDR_X3:6
+		rockchip,camera-hdr-mode = <0>;
+		port {
+			ucam_out0: endpoint {
+				remote-endpoint = <&mipi_in_ucam0>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+	};
+};
+
+&rkisp_vir0 {
+	status = "okay";
+};
+
+/*
+&rkispp_vir1 {
+	status = "okay";
+};
+*/
+
+&rkispp_vir2 {
+	status = "okay";
+};
+
+
+
+/* &vpu {
+    status = "okay";
+    /* Дополнительные параметры (опционально) */
+/*   rockchip,vpu = <&vpu_combo>;
+    rockchip,grf = <&grf>;
+};
+*/
+&dsi {
+	status = "disable";
+};
+
+&fiq_debugger {
+	rockchip,baudrate = <115200>;  /* Only 115200 and 1500000 */	
+};
+
